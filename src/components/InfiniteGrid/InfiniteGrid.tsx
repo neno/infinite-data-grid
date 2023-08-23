@@ -5,6 +5,7 @@ import { MyTable } from '../MyTable/MyTable';
 const limit = 20;
 
 export const InfiniteGrid = () => {
+  const bottomRef = useRef<HTMLDivElement>(null);
   const myOuterRef = useRef<HTMLDivElement>(null);
   const myGridRef = useRef<HTMLDivElement>(null);
   const myObserver = useRef<IntersectionObserver | null>(null);
@@ -12,13 +13,15 @@ export const InfiniteGrid = () => {
   const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
+    if (rowData.length === 0) return;
+
     const intersectionOptions = {
       root: myOuterRef.current,
-      rootMargin: '0px',
-      threshold: 1,
+      rootMargin: '0px 0px 0px 0px',
+      threshold: 0,
     };
 
-    console.log('myGridRef.current', myGridRef.current);
+    console.log('bottomRef.current', bottomRef.current);
     if (myObserver.current) {
       myObserver.current.disconnect();
     }
@@ -29,11 +32,12 @@ export const InfiniteGrid = () => {
 
       if (entry.isIntersecting) {
         console.log('entry.isIntersecting', entry.isIntersecting);
+        setPage((prev) => prev + 1);
       }
     }, intersectionOptions);
 
-    myObserver.current.observe(myGridRef.current!);
-  }, [myGridRef.current]);
+    myObserver.current.observe(bottomRef.current!);
+  }, [bottomRef.current, rowData]);
 
   useEffect(() => {
     if (page) {
@@ -60,8 +64,20 @@ export const InfiniteGrid = () => {
       }}
       ref={myOuterRef}
     >
-      <div ref={myGridRef} style={{ width: '100%', backgroundColor: 'orange' }}>
+      <div
+        ref={myGridRef}
+        style={{
+          width: '100%',
+          backgroundColor: 'orange',
+          paddingBottom: '1px',
+          overflow: 'hidden',
+        }}
+      >
         <MyTable data={rowData} />
+        <div
+          ref={bottomRef}
+          style={{ height: 5, backgroundColor: 'red' }}
+        ></div>
       </div>
     </div>
   );
