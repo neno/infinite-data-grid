@@ -1,8 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 import { fetchPosts } from '../../api/posts';
+import { AgGridReact } from 'ag-grid-react';
 import { MyTable } from '../MyTable/MyTable';
 
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+
 const limit = 20;
+
+const columnDefs = [
+  {
+    headerName: 'ID',
+    field: 'id',
+    sortable: true,
+    filter: true,
+  },
+  { headerName: 'User Id', field: 'userId', sortable: true, filter: true },
+  { headerName: 'Title', field: 'title', sortable: true, filter: true },
+  { headerName: 'Body', field: 'body', sortable: true, filter: true },
+];
+
+const gridOptions = {
+  rowModelType: 'clientSide',
+  columnDefs: columnDefs,
+};
 
 export const InfiniteGrid = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -21,7 +42,7 @@ export const InfiniteGrid = () => {
       threshold: 0,
     };
 
-    console.log('bottomRef.current', bottomRef.current);
+    console.log('myGridRef.current', myGridRef.current);
     if (myObserver.current) {
       myObserver.current.disconnect();
     }
@@ -32,12 +53,12 @@ export const InfiniteGrid = () => {
 
       if (entry.isIntersecting) {
         console.log('entry.isIntersecting', entry.isIntersecting);
-        setPage((prev) => prev + 1);
+        // setPage((prev) => prev + 1);
       }
     }, intersectionOptions);
 
-    myObserver.current.observe(bottomRef.current!);
-  }, [bottomRef.current, rowData]);
+    myObserver.current.observe(myGridRef.current!);
+  }, [myGridRef.current, rowData]);
 
   useEffect(() => {
     if (page) {
@@ -51,6 +72,15 @@ export const InfiniteGrid = () => {
 
   useEffect(() => setPage(1), []);
 
+  const getRowId = (row: any) => {
+    console.log('getRowId', row.data.id);
+    return row.data.id;
+  };
+
+  if (rowData.length === 0) {
+    return <p>"Loading..."</p>;
+  }
+
   return (
     <div
       style={{
@@ -59,25 +89,36 @@ export const InfiniteGrid = () => {
         color: 'black',
         backgroundColor: 'yellow',
         border: '1em solid yellow',
-        overflowY: 'auto',
-        overflowX: 'hidden',
+        overflow: 'hidden',
       }}
       ref={myOuterRef}
     >
       <div
         ref={myGridRef}
         style={{
+          height: '100%',
           width: '100%',
           backgroundColor: 'orange',
-          paddingBottom: '1px',
           overflow: 'hidden',
         }}
       >
-        <MyTable data={rowData} />
-        <div
+        <AgGridReact
+          gridOptions={{
+            rowModelType: 'clientSide',
+            columnDefs: columnDefs,
+          }}
+          rowData={rowData}
+          getRowId={getRowId}
+          // ref={gridRef}
+          // key={getRowId}
+          // onRowDataUpdated={gridDataUpdated}
+          // onGridReady={onGridReady}
+        />
+        {/* <MyTable data={rowData} /> */}
+        {/* <div
           ref={bottomRef}
           style={{ height: 5, backgroundColor: 'red' }}
-        ></div>
+        ></div> */}
       </div>
     </div>
   );

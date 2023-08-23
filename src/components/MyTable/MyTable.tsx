@@ -19,7 +19,7 @@ export const MyTable = ({ data }: MyTableProps) => {
           <th>body</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style={{ height: '300px', backgroundColor: 'green' }}>
         {data.map((row) => (
           <tr key={row.id}>
             <td>{row.id}</td>
