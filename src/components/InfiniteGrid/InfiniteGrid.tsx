@@ -84,51 +84,63 @@ export const InfiniteGrid = () => {
     params.api.sizeColumnsToFit();
   };
 
+  const loadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  const onBodyScrollEnd = (event: any) => {
+    console.log('onBodyScrollEnd', event);
+  };
+
   if (rowData.length === 0) {
     return <p>"Loading..."</p>;
   }
 
   return (
-    <div
-      style={{
-        width: 800,
-        height: 400,
-        color: 'black',
-        backgroundColor: 'yellow',
-        border: '1em solid yellow',
-        overflow: 'hidden',
-      }}
-      ref={myOuterRef}
-    >
+    <div>
+      <button onClick={loadMore}>Load More...</button>
       <div
-        ref={myGridRef}
         style={{
-          height: '100%',
-          width: '100%',
-          backgroundColor: 'orange',
-          overflowX: 'hidden',
-          overflowY: 'auto',
+          width: 800,
+          height: 400,
+          color: 'black',
+          backgroundColor: 'yellow',
+          border: '1em solid yellow',
+          overflow: 'hidden',
         }}
+        ref={myOuterRef}
       >
-        <AgGridReact
-          gridOptions={{
-            rowModelType: 'clientSide',
-            columnDefs: columnDefs,
+        <div
+          ref={myGridRef}
+          style={{
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'orange',
+            overflowX: 'hidden',
+            overflowY: 'hidden',
           }}
-          rowData={rowData}
-          getRowId={getRowId}
-          rowModelType='clientSide'
-          domLayout={'autoHeight'}
-          // ref={gridRef}
-          // key={getRowId}
-          // onRowDataUpdated={gridDataUpdated}
-          onGridReady={onGridReady}
-        />
-        {/* <MyTable data={rowData} /> */}
-        {/* <div
+        >
+          <AgGridReact
+            gridOptions={{
+              rowModelType: 'clientSide',
+              columnDefs: columnDefs,
+            }}
+            rowData={rowData}
+            getRowId={getRowId}
+            rowModelType='clientSide'
+            onBodyScrollEnd={onBodyScrollEnd}
+            // domLayout={'autoHeight'}
+            // ref={gridRef}
+            // key={getRowId}
+            // onRowDataUpdated={gridDataUpdated}
+            onGridReady={onGridReady}
+          />
+          {/* <MyTable data={rowData} /> */}
+          {/* <div
           ref={bottomRef}
           style={{ height: 5, backgroundColor: 'red' }}
         ></div> */}
+        </div>
       </div>
     </div>
   );
