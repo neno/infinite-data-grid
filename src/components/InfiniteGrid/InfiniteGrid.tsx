@@ -77,6 +77,13 @@ export const InfiniteGrid = () => {
     return row.data.id;
   };
 
+  const onGridReady = (params: any) => {
+    const lastRowIdx = params.api.getLastDisplayedRow();
+    const lastRow = params.api.getDisplayedRowAtIndex(lastRowIdx);
+    console.log('onGridReady - lastRow', lastRow);
+    params.api.sizeColumnsToFit();
+  };
+
   if (rowData.length === 0) {
     return <p>"Loading..."</p>;
   }
@@ -109,10 +116,11 @@ export const InfiniteGrid = () => {
           }}
           rowData={rowData}
           getRowId={getRowId}
+          rowModelType='clientSide'
           // ref={gridRef}
           // key={getRowId}
           // onRowDataUpdated={gridDataUpdated}
-          // onGridReady={onGridReady}
+          onGridReady={onGridReady}
         />
         {/* <MyTable data={rowData} /> */}
         {/* <div
