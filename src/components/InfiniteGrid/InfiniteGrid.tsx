@@ -106,7 +106,8 @@ export const InfiniteGrid = () => {
           height: '100%',
           width: '100%',
           backgroundColor: 'orange',
-          overflow: 'hidden',
+          overflowX: 'hidden',
+          overflowY: 'auto',
         }}
       >
         <AgGridReact
@@ -117,6 +118,7 @@ export const InfiniteGrid = () => {
           rowData={rowData}
           getRowId={getRowId}
           rowModelType='clientSide'
+          domLayout={'autoHeight'}
           // ref={gridRef}
           // key={getRowId}
           // onRowDataUpdated={gridDataUpdated}
