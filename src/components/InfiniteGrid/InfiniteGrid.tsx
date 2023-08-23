@@ -28,37 +28,37 @@ const gridOptions = {
 export const InfiniteGrid = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const myOuterRef = useRef<HTMLDivElement>(null);
-  const myGridRef = useRef<HTMLDivElement>(null);
+  const myGridRef = useRef<AgGridReact>(null);
   const myObserver = useRef<IntersectionObserver | null>(null);
   const [rowData, setRowData] = useState<any[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
 
-  useEffect(() => {
-    if (rowData.length === 0) return;
-
-    const intersectionOptions = {
-      root: myOuterRef.current,
-      rootMargin: '0px 0px 0px 0px',
-      threshold: 0,
-    };
-
-    console.log('myGridRef.current', myGridRef.current);
-    if (myObserver.current) {
-      myObserver.current.disconnect();
-    }
-
-    myObserver.current = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      console.log('entry', entry);
-
-      if (entry.isIntersecting) {
-        console.log('entry.isIntersecting', entry.isIntersecting);
-        // setPage((prev) => prev + 1);
-      }
-    }, intersectionOptions);
-
-    myObserver.current.observe(myGridRef.current!);
-  }, [myGridRef.current, rowData]);
+  // useEffect(() => {
+  //   if (rowData.length === 0) return;
+  //
+  //   const intersectionOptions = {
+  //     root: myOuterRef.current,
+  //     rootMargin: '0px 0px 0px 0px',
+  //     threshold: 0,
+  //   };
+  //
+  //   console.log('myGridRef.current', myGridRef.current);
+  //   if (myObserver.current) {
+  //     myObserver.current.disconnect();
+  //   }
+  //
+  //   myObserver.current = new IntersectionObserver((entries) => {
+  //     const entry = entries[0];
+  //     console.log('entry', entry);
+  //
+  //     if (entry.isIntersecting) {
+  //       console.log('entry.isIntersecting', entry.isIntersecting);
+  //       // setPage((prev) => prev + 1);
+  //     }
+  //   }, intersectionOptions);
+  //
+  //   myObserver.current.observe(myGridRef.current!);
+  // }, [myGridRef.current, rowData]);
 
   useEffect(() => {
     if (page) {
@@ -70,26 +70,41 @@ export const InfiniteGrid = () => {
     }
   }, [page]);
 
-  useEffect(() => setPage(1), []);
+  // useEffect(() => setPage(1), []);
 
-  const getRowId = (row: any) => {
-    console.log('getRowId', row.data.id);
-    return row.data.id;
-  };
+  // const getRowId = (row: any) => {
+  //   console.log('getRowId', row.data.id);
+  //   return row.data.id;
+  // };
 
-  const onGridReady = (params: any) => {
-    const lastRowIdx = params.api.getLastDisplayedRow();
-    const lastRow = params.api.getDisplayedRowAtIndex(lastRowIdx);
-    console.log('onGridReady - lastRow', lastRow);
-    params.api.sizeColumnsToFit();
-  };
+  // const onGridReady = (params: any) => {
+  //   const lastRowIdx = params.api.getLastDisplayedRow();
+  //   const lastRow = params.api.getDisplayedRowAtIndex(lastRowIdx);
+  //   console.log('onGridReady - lastRow', lastRow);
+  //   params.api.sizeColumnsToFit();
+  // };
 
   const loadMore = () => {
     setPage((prev) => prev + 1);
   };
 
+  // useEffect(() => {
+  //   const loadNewPosts = async () => {
+  //     const newPosts = await fetchPosts(page, limit);
+  //     setRowData((prev) => [...prev, ...newPosts]);
+  //   };
+  //   loadNewPosts();
+  // }, [page]);
+
   const onBodyScrollEnd = (event: any) => {
-    console.log('onBodyScrollEnd', event);
+    const gridApi = myGridRef.current?.api;
+    if (gridApi) {
+      const lastDisplayedRow = gridApi.getLastDisplayedRow();
+      const totalRowCount = gridApi.getDisplayedRowCount();
+      if (lastDisplayedRow === totalRowCount - 1) {
+        loadMore()
+      }
+    }
   };
 
   if (rowData.length === 0) {
@@ -121,19 +136,18 @@ export const InfiniteGrid = () => {
           }}
         >
           <AgGridReact
-            gridOptions={{
-              rowModelType: 'clientSide',
-              columnDefs: columnDefs,
-            }}
+            ref={myGridRef}
+            columnDefs={columnDefs}
             rowData={rowData}
-            getRowId={getRowId}
-            rowModelType='clientSide'
+            cacheBlockSize={limit}
+            infiniteInitialRowCount={0}
             onBodyScrollEnd={onBodyScrollEnd}
+            rowModelType='clientSide'
             // domLayout={'autoHeight'}
             // ref={gridRef}
             // key={getRowId}
             // onRowDataUpdated={gridDataUpdated}
-            onGridReady={onGridReady}
+            // onGridReady={onGridReady}
           />
           {/* <MyTable data={rowData} /> */}
           {/* <div
