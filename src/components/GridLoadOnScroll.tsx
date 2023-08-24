@@ -67,37 +67,35 @@ export const GridLoadOnScroll = () => {
   }
 
   return (
-    <div>
-      <button onClick={loadMore}>Load More...</button>
+    <div
+      style={{
+        width: 800,
+        height: 400,
+        color: 'black',
+        border: '1em solid yellow',
+        overflow: 'hidden',
+      }}
+    >
       <div
         style={{
-          width: 800,
-          height: 400,
-          color: 'black',
-          border: '1em solid yellow',
-          overflow: 'hidden',
+          height: '100%',
+          width: '100%',
+          backgroundColor: 'orange',
+          overflowX: 'hidden',
+          overflowY: 'hidden',
         }}
       >
-        <div
-          style={{
-            height: '100%',
-            width: '100%',
-            backgroundColor: 'orange',
-            overflowX: 'hidden',
-            overflowY: 'hidden',
+        <AgGridReact
+          gridOptions={{
+            rowModelType: 'clientSide',
+            columnDefs: columnDefs,
           }}
-        >
-          <AgGridReact
-            gridOptions={{
-              rowModelType: 'clientSide',
-              columnDefs: columnDefs,
-            }}
-            rowData={rowData}
-            getRowId={getRowId}
-            rowModelType='clientSide'
-            onBodyScrollEnd={onBodyScrollEnd}
-          />
-        </div>
+          rowData={rowData}
+          getRowId={getRowId}
+          rowModelType='clientSide'
+          onBodyScrollEnd={onBodyScrollEnd}
+          onGridReady={(params) => params.api.sizeColumnsToFit()}
+        />
       </div>
     </div>
   );
