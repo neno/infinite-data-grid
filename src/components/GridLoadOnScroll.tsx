@@ -30,7 +30,10 @@ export const GridLoadOnScroll = () => {
     if (page) {
       const loadNewPosts = async () => {
         const newPosts = await fetchPosts(page, limit);
-        setRowData((prev) => [...prev, ...newPosts]);
+
+        if (newPosts.length > 0) {
+          setRowData((prev) => [...prev, ...newPosts]);
+        }
       };
       loadNewPosts();
     }

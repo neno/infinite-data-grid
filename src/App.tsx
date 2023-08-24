@@ -1,10 +1,12 @@
 import './App.css';
+import { GridCustomObserver } from './components/GridCustomObserver';
 import { GridLoadOnScroll } from './components/GridLoadOnScroll';
 
 function App() {
   return (
     <div className='App'>
-      <GridLoadOnScroll />
+      <GridCustomObserver />
+      {/* <GridLoadOnScroll /> */}
     </div>
   );
 }
