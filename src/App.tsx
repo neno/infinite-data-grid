@@ -1,10 +1,10 @@
 import './App.css';
-import { InfiniteGrid } from './components/InfiniteGrid/InfiniteGrid';
+import { GridLoadOnScroll } from './components/GridLoadOnScroll';
 
 function App() {
   return (
     <div className='App'>
-      <InfiniteGrid />
+      <GridLoadOnScroll />
     </div>
   );
 }
