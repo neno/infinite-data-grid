@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchPosts } from '../api/posts';
 import { AgGridReact } from 'ag-grid-react';
 
@@ -8,13 +8,8 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 const limit = 20;
 
 export const GridLoadOnScroll = () => {
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const myOuterRef = useRef<HTMLDivElement>(null);
-  const myGridRef = useRef<any>(null);
   const [rowData, setRowData] = useState<any[]>([]);
   const [page, setPage] = useState<number>(0);
-
-  const currentSize = useRef<number>(rowData.length + limit);
 
   const columnDefs = [
     {
@@ -28,9 +23,8 @@ export const GridLoadOnScroll = () => {
     { headerName: 'Body', field: 'body', sortable: true, filter: true },
   ];
 
-  useEffect(() => {
-    console.log('bottomRef.current 1', bottomRef.current);
-  }, [bottomRef.current]);
+  // Load initial data
+  useEffect(() => setPage(1), []);
 
   useEffect(() => {
     if (page) {
@@ -42,8 +36,6 @@ export const GridLoadOnScroll = () => {
     }
   }, [page]);
 
-  useEffect(() => setPage(1), []);
-
   const getRowId = (row: any) => {
     console.log('getRowId', row.data.id);
     return row.data.id;
@@ -51,7 +43,9 @@ export const GridLoadOnScroll = () => {
 
   const findLastRow = () => {
     const lastRowIdx = rowData.length - 1;
+    // Check if last row is rendered by ag-grid
     const lastRow = document.querySelector(`[row-index="${lastRowIdx}"]`);
+    // If last row is rendered, load more data
     if (lastRow) {
       loadMore();
     }
@@ -61,7 +55,6 @@ export const GridLoadOnScroll = () => {
     console.log('loadMore');
 
     setPage((prev) => prev + 1);
-    currentSize.current = currentSize.current + limit;
   };
 
   const onBodyScrollEnd = (event: any) => {
@@ -84,7 +77,6 @@ export const GridLoadOnScroll = () => {
           border: '1em solid yellow',
           overflow: 'hidden',
         }}
-        ref={myOuterRef}
       >
         <div
           style={{
@@ -104,7 +96,6 @@ export const GridLoadOnScroll = () => {
             getRowId={getRowId}
             rowModelType='clientSide'
             onBodyScrollEnd={onBodyScrollEnd}
-            ref={myGridRef}
           />
         </div>
       </div>
