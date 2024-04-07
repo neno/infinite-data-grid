@@ -67,8 +67,6 @@ export const GridCustomObserver = () => {
         const newPosts = await fetchPosts(page, limit);
 
         if (newPosts.length > 0) {
-          console.log('loadNewPosts', newPosts);
-
           setRowData((prev) => [...prev, ...newPosts]);
           updateLastIndex();
         }
@@ -92,13 +90,10 @@ export const GridCustomObserver = () => {
   };
 
   const loadMore = () => {
-    console.log('loadMore');
-
     setPage((prev) => prev + 1);
   };
 
   const onBodyScrollEnd = (event: any) => {
-    console.log('onBodyScrollEnd', event);
     findLastRow();
   };
 
@@ -135,7 +130,6 @@ export const GridCustomObserver = () => {
             rowData={rowData}
             getRowId={getRowId}
             rowModelType='clientSide'
-            // onBodyScrollEnd={onBodyScrollEnd}
             onGridReady={(params) => params.api.sizeColumnsToFit()}
           />
         </div>
