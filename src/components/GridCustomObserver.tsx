@@ -9,10 +9,7 @@ const limit = 20;
 
 const CustomCellRenderer = forwardRef((props: any, ref: any) => {
   const { rowIndex, value, lastIndexRef, loadMore } = props;
-  // console.log('CustomCellRenderer', props, props.lastIndexRef());
   const lastIndex = lastIndexRef();
-  // console.log('CustomCellRenderer', value, rowIndex, lastIndex);
-  // const refLastRow = useRef<HTMLDivElement | null>(null);
 
   console.log(
     'CustomCellRenderer',
@@ -22,7 +19,6 @@ const CustomCellRenderer = forwardRef((props: any, ref: any) => {
   );
 
   if (rowIndex === lastIndex) {
-    // props.loadMore();
     return (
       <div style={{ backgroundColor: 'red' }} ref={ref}>
         {value}/{lastIndex}
