@@ -11,13 +11,6 @@ const CustomCellRenderer = forwardRef((props: any, ref: any) => {
   const { rowIndex, value, lastIndexRef, loadMore } = props;
   const lastIndex = lastIndexRef();
 
-  console.log(
-    'CustomCellRenderer',
-    rowIndex,
-    lastIndex,
-    rowIndex === lastIndex
-  );
-
   if (rowIndex === lastIndex) {
     return (
       <div style={{ backgroundColor: 'red' }} ref={ref}>
